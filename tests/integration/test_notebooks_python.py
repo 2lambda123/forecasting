@@ -27,7 +27,10 @@ def test_autoarima_quick_start(notebooks):
     notebook_path = notebooks["autoarima_quick_start"]
     output_notebook_path = os.path.join(os.path.dirname(notebook_path), "output.ipynb")
     pm.execute_notebook(
-        notebook_path, output_notebook_path, kernel_name=KERNEL, parameters=dict(STORE_SUBSET=True),
+        notebook_path,
+        output_notebook_path,
+        kernel_name=KERNEL,
+        parameters=dict(STORE_SUBSET=True),
     )
     nb = sb.read_notebook(output_notebook_path)
     df = nb.scraps.dataframe
@@ -42,7 +45,10 @@ def test_lightgbm_multi_round(notebooks):
     notebook_path = notebooks["lightgbm_multi_round"]
     output_notebook_path = os.path.join(os.path.dirname(notebook_path), "output.ipynb")
     pm.execute_notebook(
-        notebook_path, output_notebook_path, kernel_name=KERNEL, parameters=dict(N_SPLITS=1),
+        notebook_path,
+        output_notebook_path,
+        kernel_name=KERNEL,
+        parameters=dict(N_SPLITS=1),
     )
     nb = sb.read_notebook(output_notebook_path)
     df = nb.scraps.dataframe
@@ -56,7 +62,10 @@ def test_dilatedcnn_multi_round(notebooks):
     notebook_path = notebooks["dilatedcnn_multi_round"]
     output_notebook_path = os.path.join(os.path.dirname(notebook_path), "output.ipynb")
     pm.execute_notebook(
-        notebook_path, output_notebook_path, kernel_name=KERNEL, parameters=dict(N_SPLITS=2),
+        notebook_path,
+        output_notebook_path,
+        kernel_name=KERNEL,
+        parameters=dict(N_SPLITS=2),
     )
     nb = sb.read_notebook(output_notebook_path)
     df = nb.scraps.dataframe
@@ -70,7 +79,10 @@ def test_autoarima_multi_round(notebooks):
     notebook_path = notebooks["autoarima_multi_round"]
     output_notebook_path = os.path.join(os.path.dirname(notebook_path), "output.ipynb")
     pm.execute_notebook(
-        notebook_path, output_notebook_path, kernel_name=KERNEL, parameters=dict(N_SPLITS=2, STORE_SUBSET=True),
+        notebook_path,
+        output_notebook_path,
+        kernel_name=KERNEL,
+        parameters=dict(N_SPLITS=2, STORE_SUBSET=True),
     )
     nb = sb.read_notebook(output_notebook_path)
     df = nb.scraps.dataframe

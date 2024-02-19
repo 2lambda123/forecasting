@@ -32,16 +32,16 @@ FIRST_WEEK_START = pd.to_datetime("1989-09-14 00:00:00")
 def create_features(pred_round, train_dir, lags, window_size, used_columns):
     """Create input features for model training and testing.
 
-    Args: 
+    Args:
         pred_round (int): Prediction round (1, 2, ...)
-        train_dir (str): Path of the training data directory 
+        train_dir (str): Path of the training data directory
         lags (np.array): Numpy array including all the lags
         window_size (int): Maximum step for computing the moving average
         used_columns (list[str]): A list of names of columns used in model training (including target variable)
 
     Returns:
         pd.Dataframe: Dataframe including all the input features and target variable
-        int: Last week of the training data 
+        int: Last week of the training data
     """
 
     # Load training data
