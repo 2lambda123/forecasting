@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License. 
+# Licensed under the MIT License.
 
 """
 This file contains utility functions for builing Dilated CNN model to solve time series forecasting problems.
@@ -23,14 +23,14 @@ def create_dcnn_model(
 ):
     """Create a Dilated CNN model.
 
-    Args: 
+    Args:
         seq_len (int): Input sequence length
         n_dyn_fea (int): Number of dynamic features
         n_outputs (int): Number of outputs of the network
         kernel_size (int): Kernel size of each convolutional layer
         n_filters (int): Number of filters in each convolutional layer
         dropout_rate (float): Dropout rate in the network
-        max_cat_id (list[int]): Each entry in the list represents the maximum value of the ID of a specific categorical variable. 
+        max_cat_id (list[int]): Each entry in the list represents the maximum value of the ID of a specific categorical variable.
 
     Returns:
         object: Keras Model object
@@ -55,7 +55,7 @@ def create_dcnn_model(
     for i in range(1, n_dilated_layers):
         conv1d_layers.append(
             Conv1D(
-                filters=n_filters, kernel_size=kernel_size, dilation_rate=2 ** i, padding="causal", activation="relu"
+                filters=n_filters, kernel_size=kernel_size, dilation_rate=2**i, padding="causal", activation="relu"
             )(conv1d_layers[i - 1])
         )
 
