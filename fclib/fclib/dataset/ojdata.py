@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License. 
+# Licensed under the MIT License.
 
 
 import os
@@ -39,7 +39,7 @@ def maybe_download(url, dest_directory, filename=None):
         dest_directory (str): Destination directory.
         url (str): URL of the file to download.
         filename (str): File name.
-        
+
     Returns:
         str: File path of the file downloaded.
     """
@@ -54,7 +54,12 @@ def maybe_download(url, dest_directory, filename=None):
         num_iterables = math.ceil(total_size / block_size)
 
         with open(filepath, "wb") as file:
-            for data in tqdm(r.iter_content(block_size), total=num_iterables, unit="KB", unit_scale=True,):
+            for data in tqdm(
+                r.iter_content(block_size),
+                total=num_iterables,
+                unit="KB",
+                unit_scale=True,
+            ):
                 file.write(data)
     else:
         log.debug("File {} already downloaded".format(filepath))
@@ -67,7 +72,7 @@ def download_ojdata(dest_dir="."):
 
      Args:
         dest_dir (str): Directory path for the downloaded file
-    
+
     Returns:
         str: Path of the downloaded file.
     """
@@ -102,16 +107,16 @@ def download_ojdata(dest_dir="."):
 
 def complete_and_fill_df(df, stores, brands, weeks):
     """Completes missing rows in Orange Juice datasets and fills in the missing values.
-    
+
     Args:
         df (pd.DataFrame): data frame to fill in the rows and missing values in
         stores (list[int]): list of stores to include
         brands (list[int]): list of brands to include
         weeks (list[int]): list of weeks to include
-        
+
     Returns:
         pd.DataFrame: data frame with completed rows and missing values filled in
-    
+
     """
     d = {"store": stores, "brand": brands, "week": weeks}
     data_grid = df_from_cartesian_product(d)
@@ -146,10 +151,10 @@ def _gen_split_indices(n_splits=12, horizon=2, gap=2, first_week=40, last_week=1
 
 
 def split_train_test(data_dir, n_splits=1, horizon=2, gap=2, first_week=40, last_week=156, write_csv=False):
-    """Generate training, testing, and auxiliary datasets. Training data includes the historical 
-    sales and external features; testing data contains the future sales and external features; 
-    auxiliary data includes the future price, deal, and advertisement information which can be 
-    used for making predictions (we assume such auxiliary information is available at the time 
+    """Generate training, testing, and auxiliary datasets. Training data includes the historical
+    sales and external features; testing data contains the future sales and external features;
+    auxiliary data includes the future price, deal, and advertisement information which can be
+    used for making predictions (we assume such auxiliary information is available at the time
     when we generate the forecasts). Use this function to generate the train, test, aux data for
     each forecast period on the fly, or use write_csv flag to write data to files.
 
@@ -170,19 +175,19 @@ def split_train_test(data_dir, n_splits=1, horizon=2, gap=2, first_week=40, last
 
     Args:
         data_dir (str): location of the download directory
-        n_splits (int, optional): number of splits (folds) to generate (default: 1) 
-        horizon (int, optional): forecasting horizon, number of weeks to forecast (default: 2) 
-        gap (int, optional): gap between training and testing, number of weeks between last training 
-            week and first test week (default: 2) 
-        first_week (int, optional): first available week (default: 40) 
+        n_splits (int, optional): number of splits (folds) to generate (default: 1)
+        horizon (int, optional): forecasting horizon, number of weeks to forecast (default: 2)
+        gap (int, optional): gap between training and testing, number of weeks between last training
+            week and first test week (default: 2)
+        first_week (int, optional): first available week (default: 40)
         last_week (int, optional): last available week (default: 156)
         write_csv (Boolean, optional): Whether to write out the data files or not (default: False)
-    
+
     Returns:
         list[pandas.DataFrame]: a list containing train data frames for each split
         list[pandas.DataFrame]: a list containing test data frames for each split
         list[pandas.DataFrame]: a list containing aux data frames for each split
-        
+
     """
     # Read sales data into dataframe
     sales = pd.read_csv(os.path.join(data_dir, "yx.csv"), index_col=0)
@@ -238,75 +243,75 @@ def specify_data_schema(
 ):
     """Specify the schema of a time series dataset.
 
-        Args:
-            df (Pandas DataFrame): input time series dataframe
-            time_col_name (str): name of the timestamp column
-            target_col_name (str): name of the target column that need to be forecasted
-            frequency (str): frequency of the timestamps represented by the time series offset
-                             aliases used in Pandas (e.g. "W" for weekly frequency). Please see
-                             https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timeseries-offset-aliases 
-                             for details.
-            time_format (str): format of the timestamps (e.g., "%d.%m.%Y %H:%M:%S")
-            ts_id_col_names (list): names of the columns for identifying a unique time series of
-                                 the target variable
-            static_feat_names (list): names of the feature columns that do not change over time
-            dynamic_feat_names (list): names of the feature columns that can change over time
-            description (str): description of the data (e.g., "training set", "testing set")
+    Args:
+        df (Pandas DataFrame): input time series dataframe
+        time_col_name (str): name of the timestamp column
+        target_col_name (str): name of the target column that need to be forecasted
+        frequency (str): frequency of the timestamps represented by the time series offset
+                         aliases used in Pandas (e.g. "W" for weekly frequency). Please see
+                         https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timeseries-offset-aliases
+                         for details.
+        time_format (str): format of the timestamps (e.g., "%d.%m.%Y %H:%M:%S")
+        ts_id_col_names (list): names of the columns for identifying a unique time series of
+                             the target variable
+        static_feat_names (list): names of the feature columns that do not change over time
+        dynamic_feat_names (list): names of the feature columns that can change over time
+        description (str): description of the data (e.g., "training set", "testing set")
 
-            Note that static_feat_names should include column names of the static features 
-            other than those in ts_id_col_names. In addition, dynamic_feat_names should not 
-            include the timestamp column and the target column. 
+        Note that static_feat_names should include column names of the static features
+        other than those in ts_id_col_names. In addition, dynamic_feat_names should not
+        include the timestamp column and the target column.
 
-        Returns:
-            df_config (dict): configuration of the time series data 
-        
-        TODO: Check if this is used before release.
-        
-        Examples:
-            >>> # Case 1
-            >>> sales = {"timestamp": ["01/01/2001", "03/01/2001", "02/01/2001"], 
-            >>>          "sales": [1234, 2345, 1324],  
-            >>>          "store": ["1001", "1002", "1001"], 
-            >>>          "brand": ["1", "2", "1"], 
-            >>>          "income": [53000, 65000, 53000], 
-            >>>          "price": [10, 12, 11]}
-            >>> df = pd.DataFrame(sales)
-            >>> time_col_name = "timestamp"
-            >>> target_col_name = "sales"
-            >>> ts_id_col_names = ["store", "brand"]
-            >>> static_feat_names = ["income"]
-            >>> dynamic_feat_names = ["price"]
-            >>> frequency = "MS" #monthly start
-            >>> time_format = "%m/%d/%Y"
-            >>> df_config = specify_data_schema(df, time_col_name,
-            >>>                                 target_col_name, frequency,
-            >>>                                 time_format, ts_id_col_names,
-            >>>                                 static_feat_names, dynamic_feat_names)
-            >>> print(df_config)
-            {'time_col_name': 'timestamp', 'target_col_name': 'sales', 'frequency': 'MS', 'time_format': '%m/%d/%Y', 'ts_id_col_names': ['store', 'brand'], 'static_feat_names': ['income'], 'dynamic_feat_names': ['price'], 'description': None}
+    Returns:
+        df_config (dict): configuration of the time series data
 
-            >>> # Case 2
-            >>> sales = {"timestamp": ["01/01/2001", "02/01/2001", "03/01/2001"], 
-            >>>          "sales": [1234, 2345, 1324],  
-            >>>          "store": ["1001", "1001", "1001"], 
-            >>>          "brand": ["1", "1", "1"], 
-            >>>          "income": [53000, 53000, 53000], 
-            >>>          "price": [10, 12, 11]}
-            >>> df = pd.DataFrame(sales)
-            >>> time_col_name = "timestamp"
-            >>> target_col_name = "sales"
-            >>> ts_id_col_names = None
-            >>> static_feat_names = ["store", "brand", "income"]
-            >>> dynamic_feat_names = ["price"]
-            >>> frequency = "MS" #monthly start
-            >>> time_format = "%m/%d/%Y"
-            >>> df_config = specify_data_schema(df, time_col_name,
-            >>>                                 target_col_name, frequency,
-            >>>                                 time_format, ts_id_col_names,
-            >>>                                 static_feat_names, dynamic_feat_names)
-            >>> print(df_config)
-            {'time_col_name': 'timestamp', 'target_col_name': 'sales', 'frequency': 'MS', 'time_format': '%m/%d/%Y', 'ts_id_col_names': None, 'static_feat_names': ['store', 'brand', 'income'], 'dynamic_feat_names': ['price'], 'description': None}          
-        """
+    TODO: Check if this is used before release.
+
+    Examples:
+        >>> # Case 1
+        >>> sales = {"timestamp": ["01/01/2001", "03/01/2001", "02/01/2001"],
+        >>>          "sales": [1234, 2345, 1324],
+        >>>          "store": ["1001", "1002", "1001"],
+        >>>          "brand": ["1", "2", "1"],
+        >>>          "income": [53000, 65000, 53000],
+        >>>          "price": [10, 12, 11]}
+        >>> df = pd.DataFrame(sales)
+        >>> time_col_name = "timestamp"
+        >>> target_col_name = "sales"
+        >>> ts_id_col_names = ["store", "brand"]
+        >>> static_feat_names = ["income"]
+        >>> dynamic_feat_names = ["price"]
+        >>> frequency = "MS" #monthly start
+        >>> time_format = "%m/%d/%Y"
+        >>> df_config = specify_data_schema(df, time_col_name,
+        >>>                                 target_col_name, frequency,
+        >>>                                 time_format, ts_id_col_names,
+        >>>                                 static_feat_names, dynamic_feat_names)
+        >>> print(df_config)
+        {'time_col_name': 'timestamp', 'target_col_name': 'sales', 'frequency': 'MS', 'time_format': '%m/%d/%Y', 'ts_id_col_names': ['store', 'brand'], 'static_feat_names': ['income'], 'dynamic_feat_names': ['price'], 'description': None}
+
+        >>> # Case 2
+        >>> sales = {"timestamp": ["01/01/2001", "02/01/2001", "03/01/2001"],
+        >>>          "sales": [1234, 2345, 1324],
+        >>>          "store": ["1001", "1001", "1001"],
+        >>>          "brand": ["1", "1", "1"],
+        >>>          "income": [53000, 53000, 53000],
+        >>>          "price": [10, 12, 11]}
+        >>> df = pd.DataFrame(sales)
+        >>> time_col_name = "timestamp"
+        >>> target_col_name = "sales"
+        >>> ts_id_col_names = None
+        >>> static_feat_names = ["store", "brand", "income"]
+        >>> dynamic_feat_names = ["price"]
+        >>> frequency = "MS" #monthly start
+        >>> time_format = "%m/%d/%Y"
+        >>> df_config = specify_data_schema(df, time_col_name,
+        >>>                                 target_col_name, frequency,
+        >>>                                 time_format, ts_id_col_names,
+        >>>                                 static_feat_names, dynamic_feat_names)
+        >>> print(df_config)
+        {'time_col_name': 'timestamp', 'target_col_name': 'sales', 'frequency': 'MS', 'time_format': '%m/%d/%Y', 'ts_id_col_names': None, 'static_feat_names': ['store', 'brand', 'income'], 'dynamic_feat_names': ['price'], 'description': None}
+    """
     if len(df) == 0:
         raise ValueError("Input time series dataframe should not be empty.")
 
@@ -338,8 +343,7 @@ def specify_data_schema(
 
 
 def _check_col_names(df_col_names, input_col_names, input_type):
-    """Check if input column/feature names are valid.
-    """
+    """Check if input column/feature names are valid."""
     if input_type in ["timestamp", "target"]:
         assert isinstance(input_col_names, str)
         if input_col_names not in df_col_names:
@@ -352,8 +356,7 @@ def _check_col_names(df_col_names, input_col_names, input_type):
 
 
 def _check_time_format(df, time_col_name, time_format):
-    """Check if the timestamp format is valid.
-    """
+    """Check if the timestamp format is valid."""
     try:
         pd.to_datetime(df[time_col_name], format=time_format)
     except Exception:
@@ -361,8 +364,7 @@ def _check_time_format(df, time_col_name, time_format):
 
 
 def _check_frequency(df, time_col_name, frequency, time_format, ts_id_col_names):
-    """Check if the data frequency is valid.
-    """
+    """Check if the data frequency is valid."""
     try:
         df[time_col_name] = pd.to_datetime(df[time_col_name], format=time_format)
         timestamps_all = pd.date_range(min(df[time_col_name]), end=max(df[time_col_name]), freq=frequency)
@@ -384,8 +386,7 @@ def _check_frequency(df, time_col_name, frequency, time_format, ts_id_col_names)
 
 
 def _check_static_feat(df, ts_id_col_names, static_feat_names):
-    """Check if the input static features change over time and include ts_id_col_names.
-    """
+    """Check if the input static features change over time and include ts_id_col_names."""
     for feat in static_feat_names:
         condition1 = (ts_id_col_names is None) and (df[feat].nunique() > 1)
         condition2 = (ts_id_col_names is not None) and (df.groupby(ts_id_col_names)[feat].nunique().max() > 1)
@@ -416,7 +417,7 @@ def specify_retail_data_schema(
         description (str): description of the data (e.g., "training set", "testing set")
 
     Returns:
-        df_config (dict): configuration of the time series data 
+        df_config (dict): configuration of the time series data
         df (Pandas DataFrame): sales data combined with store demographic features
     """
     # Read the 1st split of training data if "sales" is not specified

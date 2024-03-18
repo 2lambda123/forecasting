@@ -21,7 +21,7 @@ def module_exists(module_name):
 
     Args:
         module_name (str): name of the package/module
-    
+
     Returns:
         bool: True if module exists; otherwise False
     """
@@ -46,7 +46,7 @@ def module_path(env_name, module_name):
 
     Args:
         env_name (str): name of the conda environment
-        module_name (str): name of the package/module	
+        module_name (str): name of the package/module
 
     Returns:
         str: path of the package/module

@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License. 
+# Licensed under the MIT License.
 
 """
 This file contains utility functions for builing multiple linear regression 
@@ -11,15 +11,15 @@ from sklearn.linear_model import LinearRegression
 
 
 def fit(train_df, grain_col_names, fea_col_names=[], target_col_name="target"):
-    """Train multiple linear regression models with each being trained on an individual time 
+    """Train multiple linear regression models with each being trained on an individual time
     series specified by columns in grain_col_names.
-    
-    Args: 
+
+    Args:
         train_df (pandas.DataFrame): Training data frame including all the features
         grain_col_names (list[str]): List of the column names that specify each time series
         fea_col_names (list[str]): List of the names of columns that we want to use as input features
         target_col_name (str): Name of the target column
-        
+
     Returns:
         dict: Dictionary including all the trained linear regression models
     """
@@ -41,7 +41,7 @@ def predict(
 
     Args:
         test_df (pandas.DataFrame): Dataframe including all needed features
-        lr_models (dict): A dictionary that includes all the trained linear regression models with format 
+        lr_models (dict): A dictionary that includes all the trained linear regression models with format
             {(grain1, grain2, ...): model1, (grain1, grain2, ...): model2, ...}
         time_col_name (str): Name of the time column
         grain_col_names (list[str]): List of the column names that specify each time series
