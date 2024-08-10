@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License. 
+# Licensed under the MIT License.
 
 """
 This file contains utility functions for interacting with Azure ML Resources. 
@@ -33,7 +33,11 @@ def get_auth():
 
 
 def get_or_create_workspace(
-    config_path="./.azureml", subscription_id=None, resource_group=None, workspace_name=None, workspace_region=None,
+    config_path="./.azureml",
+    subscription_id=None,
+    resource_group=None,
+    workspace_name=None,
+    workspace_region=None,
 ):
     """
     Method to get or create workspace.
@@ -62,7 +66,10 @@ def get_or_create_workspace(
             ws = Workspace.from_config(config_file_path, auth=get_auth())
         else:
             ws = Workspace.get(
-                name=workspace_name, subscription_id=subscription_id, resource_group=resource_group, auth=get_auth(),
+                name=workspace_name,
+                subscription_id=subscription_id,
+                resource_group=resource_group,
+                auth=get_auth(),
             )
 
     except ProjectSystemException:
@@ -82,7 +89,13 @@ def get_or_create_workspace(
 
 
 def get_or_create_amlcompute(
-    workspace, compute_name, vm_size="", min_nodes=0, max_nodes=None, idle_seconds_before_scaledown=None, verbose=False,
+    workspace,
+    compute_name,
+    vm_size="",
+    min_nodes=0,
+    max_nodes=None,
+    idle_seconds_before_scaledown=None,
+    verbose=False,
 ):
     """
         Get or create AmlCompute as the compute target. If a cluster of the same name is found,

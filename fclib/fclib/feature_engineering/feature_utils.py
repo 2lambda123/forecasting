@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft Corporation.
-# Licensed under the MIT License. 
+# Licensed under the MIT License.
 
 """
 This file contains utility functions for creating features for time
@@ -53,7 +53,7 @@ def day_type(datetime_col, holiday_col=None, semi_holiday_offset=timedelta(days=
         holiday_col: Holiday code column. Default value None.
         semi_holiday_offset: Time difference between the date before (or after)
             the holiday and the holiday. Default value timedelta(days=1).
-    
+
     Returns:
         A numpy array containing converted datatime_col into day types.
     """
@@ -98,7 +98,7 @@ def time_of_year(datetime_col):
 
     Args:
         datetime_col: Datetime column.
-    
+
     Returns:
         A numpy array containing converted datatime_col into time of year.
     """
@@ -223,12 +223,12 @@ def normalized_current_year(datetime_col, min_year, max_year):
     """
     Temporal feature indicating the position of the year of a record in the
     entire time period under consideration, normalized to be between 0 and 1.
-    
+
     Args:
         datetime_col: Datetime column.
         min_year: minimum value of year.
         max_year: maximum value of year.
-    
+
     Returns:
         float: the position of the current year in the min_year:max_year range
     """
@@ -246,7 +246,7 @@ def normalized_current_date(datetime_col, min_date, max_date):
     """
     Temporal feature indicating the position of the date of a record in the
     entire time period under consideration, normalized to be between 0 and 1.
-    
+
     Args:
         datetime_col: Datetime column.
         min_date: minimum value of date.
@@ -255,11 +255,11 @@ def normalized_current_date(datetime_col, min_date, max_date):
     Returns:
         float: the position of the current date in the min_date:max_date range
     """
-    date = datetime_col # .dt.date
-    current_date = (date - min_date) # .apply(lambda x: x.days)
+    date = datetime_col  # .dt.date
+    current_date = date - min_date  # .apply(lambda x: x.days)
 
     if max_date != min_date:
-        current_date = current_date / (max_date - min_date) # .days
+        current_date = current_date / (max_date - min_date)  # .days
     else:
         current_date = pd.Series([0 for x in range(len(datetime_col))])
 
@@ -270,7 +270,7 @@ def normalized_current_datehour(datetime_col, min_datehour, max_datehour):
     """
     Temporal feature indicating the position of the hour of a record in the
     entire time period under consideration, normalized to be between 0 and 1.
-    
+
     Args:
         datetime_col: Datetime column.
         min_datehour: minimum value of datehour.
@@ -295,13 +295,13 @@ def normalized_columns(datetime_col, value_col, mode="log", output_colname="norm
     """
     Creates columns normalized to be log of input columns devided by global average of each columns,
     or normalized using maximum and minimum.
-    
+
     Args:
         datetime_col: Datetime column.
         value_col: Value column to be normalized.
         mode: Normalization mode,
             accepted values are 'log' and 'minmax'. Default value 'log'.
-    
+
     Returns:
         Normalized value column.
     """
@@ -342,7 +342,7 @@ def fourier_approximation(t, n, period):
         t: Datetime column.
         n: Harmonies, n=0, 1, 2, 3,...
         period: Period of the datetime variable t.
-    
+
     Returns:
         float: Sine component
         float: Cosine component
@@ -361,7 +361,7 @@ def annual_fourier(datetime_col, n_harmonics):
     Args:
         datetime_col: Datetime column.
         n_harmonics: Harmonies, n=0, 1, 2, 3,...
-    
+
     Returns:
         dict: Output dictionary containing sine and cosine components of
             the Fourier series for all harmonies.
@@ -385,7 +385,7 @@ def weekly_fourier(datetime_col, n_harmonics):
     Args:
         datetime_col: Datetime column.
         n_harmonics: Harmonies, n=0, 1, 2, 3,...
-    
+
     Returns:
         dict: Output dictionary containing sine and cosine components of
             the Fourier series for all harmonies.
@@ -409,7 +409,7 @@ def daily_fourier(datetime_col, n_harmonics):
     Args:
         datetime_col: Datetime column.
         n_harmonics: Harmonies, n=0, 1, 2, 3,...
-    
+
     Returns:
         dict: Output dictionary containing sine and cosine components of
             the Fourier series for all harmonies.
@@ -428,10 +428,10 @@ def daily_fourier(datetime_col, n_harmonics):
 
 def df_from_cartesian_product(dict_in):
     """Generate a Pandas dataframe from Cartesian product of lists.
-    
-    Args: 
+
+    Args:
         dict_in (Dictionary): Dictionary containing multiple lists, e.g. {"fea1": list1, "fea2": list2}
-        
+
     Returns:
         df (Dataframe): Dataframe corresponding to the Caresian product of the lists
     """
@@ -444,13 +444,13 @@ def df_from_cartesian_product(dict_in):
 
 def lagged_features(df, lags):
     """Create lagged features based on time series data.
-    
+
     Args:
         df (Dataframe): Input time series data sorted by time
         lags (List): Lag lengths
-        
+
     Returns:
-        fea (Dataframe): Lagged features 
+        fea (Dataframe): Lagged features
     """
     df_list = []
     for lag in lags:
@@ -463,12 +463,12 @@ def lagged_features(df, lags):
 
 def moving_averages(df, start_step, window_size=None):
     """Compute averages of every feature over moving time windows.
-    
+
     Args:
         df (Dataframe): Input features as a dataframe
         start_step (Integer): Starting time step of rolling mean
         window_size (Integer): Windows size of rolling mean
-    
+
     Returns:
         fea (Dataframe): Dataframe consisting of the moving averages
     """
@@ -482,15 +482,15 @@ def moving_averages(df, start_step, window_size=None):
 
 def combine_features(df, lag_fea, lags, window_size, used_columns):
     """Combine lag features, moving average features, and orignal features in the data.
-    
+
     Args:
         df (Dataframe): Time series data including the target series and external features
         lag_fea (List): A list of column names for creating lagged features
         lags (Numpy Array): Numpy array including all the lags
         window_size (Integer): Window size of rolling mean
-        used_columns (List): A list containing the names of columns that are needed in the 
+        used_columns (List): A list containing the names of columns that are needed in the
         input dataframe (including the target column)
-    
+
     Returns:
         fea_all (Dataframe): Dataframe including all the features
     """
@@ -501,19 +501,19 @@ def combine_features(df, lag_fea, lags, window_size, used_columns):
 
 
 def gen_sequence(df, seq_len, seq_cols, start_timestep=0, end_timestep=None):
-    """Reshape time series features into an array of dimension (# of time steps, # of 
-    features).  
-    
+    """Reshape time series features into an array of dimension (# of time steps, # of
+    features).
+
     Args:
-        df (pd.Dataframe): Dataframe including time series data for a specific grain of a 
-            multi-granular time series, e.g., data of a specific store-brand combination for 
+        df (pd.Dataframe): Dataframe including time series data for a specific grain of a
+            multi-granular time series, e.g., data of a specific store-brand combination for
             time series data involving multiple stores and brands
         seq_len (int): Number of previous time series values to be used to form feature
         sequences which can be used for model training
-        seq_cols (list[str]): A list of names of the feature columns 
+        seq_cols (list[str]): A list of names of the feature columns
         start_timestep (int): First time step you can use to create feature sequences
         end_timestep (int): Last time step you can use to create feature sequences
-        
+
     Returns:
         object: A generator object for iterating all the feature sequences
     """
@@ -527,18 +527,18 @@ def gen_sequence(df, seq_len, seq_cols, start_timestep=0, end_timestep=None):
 
 
 def gen_sequence_array(df_all, seq_len, seq_cols, grain1_name, grain2_name, start_timestep=0, end_timestep=None):
-    """Combine feature sequences for all the combinations of (grain1_name, grain2_name) into a 
+    """Combine feature sequences for all the combinations of (grain1_name, grain2_name) into a
     3-dimensional array.
-    
+
     Args:
         df_all (pd.Dataframe): Time series data of all the grains for multi-granular data
         seq_len (int): Number of previous time series values to be used to form sequences
-        seq_cols (list[str]): A list of names of the feature columns 
+        seq_cols (list[str]): A list of names of the feature columns
         grain1_name (str): Name of the 1st column indicating the time series graunularity
         grain2_name (str): Name of the 2nd column indicating the time series graunularity
         start_timestep (int): First time step you can use to create feature sequences
         end_timestep (int): Last time step you can use to create feature sequences
-        
+
     Returns:
         seq_array (np.array): An array of feature sequences for all combinations of granularities
     """
@@ -560,14 +560,14 @@ def gen_sequence_array(df_all, seq_len, seq_cols, grain1_name, grain2_name, star
 
 def static_feature_array(df_all, total_timesteps, seq_cols, grain1_name, grain2_name):
     """Generate an arary which encodes all the static features.
-    
+
     Args:
         df_all (pd.DataFrame): Time series data of all the grains for multi-granular data
         total_timesteps (int): Total number of training samples for modeling
         seq_cols (list[str]): A list of names of the static feature columns, e.g. store ID
         grain1_name (str): Name of the 1st column indicating the time series graunularity
         grain2_name (str): Name of the 2nd column indicating the time series graunularity
-        
+
     Return:
         fea_array (np.array): An array of static features of all the grains, e.g. all the
             combinations of stores and brands in retail sale forecasting
@@ -581,12 +581,12 @@ def static_feature_array(df_all, total_timesteps, seq_cols, grain1_name, grain2_
 
 def normalize_columns(df, seq_cols, scaler=MinMaxScaler()):
     """Normalize a subset of columns of a dataframe.
-    
+
     Args:
-        df (pd.DataFrame): Input dataframe 
+        df (pd.DataFrame): Input dataframe
         seq_cols (list[str]): A list of names of columns to be normalized
         scaler (object): A scikit learn scaler object
-    
+
     Returns:
         pd.DataFrame: Normalized dataframe
         object: Scaler object
